@@ -4,75 +4,102 @@ let hasFlippedCard = false;
 let lockBoard = false;
 let firstCard, secondCard;
 
+let scoreCount = 0;
+let matchedPairs = 0;
+const totalPairs = cards.length / 2; // 16 cards = 8 pairs
+let moveCount = 0;
+
+const scoreDisplay = document.getElementById('score');
+const movesDisplay = document.getElementById('moves');
+const restartButton = document.getElementById('restart');
+
 function flipCard() {
-  if (lockBoard) return;
-  if (this === firstCard) return;
+    if (lockBoard) return;
+    if (this === firstCard) return;
 
-  this.classList.add('flip');
+    this.classList.add('flip');
 
-  if (!hasFlippedCard) {
-    // first click
-    hasFlippedCard = true;
-    firstCard = this;
+    if (!hasFlippedCard) {
+        hasFlippedCard = true;
+        firstCard = this;
+        return;
+    }
 
-    return;
-  }
-
-  // second click
-  secondCard = this;
-
-  checkForMatch();
+    secondCard = this;
+    moveCount++;
+    updateMoves();
+    checkForMatch();
 }
 
 function checkForMatch() {
-  let isMatch = firstCard.dataset.framework === secondCard.dataset.framework;
-
-  isMatch ? disableCards() : unflipCards();
+    let isMatch = firstCard.dataset.name === secondCard.dataset.name;
+    isMatch ? disableCards() : unflipCards();
 }
 
 function disableCards() {
-  firstCard.removeEventListener('click', flipCard);
-  secondCard.removeEventListener('click', flipCard);
-   updateScore();
-   resetBoard();
-
-  resetBoard();
+    firstCard.removeEventListener('click', flipCard);
+    secondCard.removeEventListener('click', flipCard);
+    updateScore();
+    matchedPairs++;
+    if (matchedPairs === totalPairs) {
+        setTimeout(() => {
+            alert("Great job! Restarting the game...");
+            restartGame();
+        }, 1000);
+    }
+    resetBoard();
 }
 
 function unflipCards() {
-  lockBoard = true;
-
-  setTimeout(() => {
-    firstCard.classList.remove('flip');
-    secondCard.classList.remove('flip');
-
-    resetBoard();
-  }, 1500);
+    lockBoard = true;
+    setTimeout(() => {
+        firstCard.classList.remove('flip');
+        secondCard.classList.remove('flip');
+        resetBoard();
+    }, 1500);
 }
 
 function resetBoard() {
-  [hasFlippedCard, lockBoard] = [false, false];
-  [firstCard, secondCard] = [null, null];
+    [hasFlippedCard, lockBoard] = [false, false];
+    [firstCard, secondCard] = [null, null];
 }
 
-(function shuffle() {
-  cards.forEach(card => {
-    let randomPos = Math.floor(Math.random() * 12);
-    card.style.order = randomPos;
-  });
-})();
-
-cards.forEach(card => card.addEventListener('click', flipCard));
-
-// make scoreboard fucntional
-const scoreboard = document.querySelector('.scoreboard');
-const score = document.querySelector('.score');
-let scoreCount = 0;
-const scoreDisplay = document.createElement('div');
-scoreDisplay.classList.add('score-display');
-scoreDisplay.innerText = `Score: ${scoreCount}`;
-scoreboard.appendChild(scoreDisplay);
 function updateScore() {
-  scoreCount++;
-  scoreDisplay.innerText = `Score: ${scoreCount}`;
+    scoreCount++;
+    scoreDisplay.textContent = scoreCount;
+        }
+
+function updateMoves() {
+    movesDisplay.textContent = moveCount;
 }
+
+function shuffleCards() {
+    cards.forEach(card => {
+        let randomPos = Math.floor(Math.random() * cards.length);
+        // console.log(cards.length);
+        card.style.order = randomPos;
+    });
+}
+
+function restartGame() {
+    scoreCount = 0 -1;
+    moveCount = 0;
+    matchedPairs = 0; // reset match counter
+    updateScore();
+    updateMoves();
+    resetBoard();
+
+    cards.forEach(card => {
+        card.classList.remove('flip');
+        card.addEventListener('click', flipCard);
+    });
+
+    setTimeout(() => {
+        shuffleCards();
+    }, 500);
+}
+
+// Initial setup
+shuffleCards();
+cards.forEach(card => card.addEventListener('click', flipCard));
+restartButton.addEventListener('click', restartGame);
