@@ -103,3 +103,9 @@ function restartGame() {
 shuffleCards();
 cards.forEach(card => card.addEventListener('click', flipCard));
 restartButton.addEventListener('click', restartGame);
+window.onload = function () {
+    setTimeout(() => {
+        alert("Find all the matching pairs of cards. Have fun!");
+        restartGame(); // Make sure this function is declared in scope
+    }, 1000);
+};
