@@ -1,0 +1,100 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.memory-game {
+    width: 640px;
+    height: 640px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 5px;
+    perspective: 1000px;
+}
+
+.memory-card {
+    width: calc(25% - 10px);
+    position: relative;
+    margin: 5px;
+    border-radius: 5px;
+    transform: scale(1);
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, .3);
+    cursor: pointer;
+}
+
+.memory-card:active {
+    transform: scale(0.97);
+    transition: transform 0.2s;
+}
+
+.memory-card.flip {
+    transform: rotateY(180deg);
+}
+
+.front-face,
+.back-face {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background: turquoise;
+    position: absolute;
+    border-radius: 5px;
+    backface-visibility: hidden;
+}
+
+.front-face {
+    transform: rotateY(180deg);
+}
+
+/* style scoreboard */
+.score-board {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.score-board h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.score-board p {
+    margin: 5px 0;
+    font-size: 1.2em;
+}
+
+.score-board button {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.score-board button:hover {
+    background: #2980b9;
+}
